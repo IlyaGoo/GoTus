@@ -17,5 +17,6 @@ func printControlResult(control Control, needPrefix bool) {
 func main() {
 	testControl := Control{0, "Accepted"}
 	testControl.result = "Rejected"
+	testControl.result = "Cutout"
 	printControlResult(testControl, true)
 }
