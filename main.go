@@ -1,22 +1,33 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"strconv"
+	"os"
 )
 
-func printControlResult(control Control, needPrefix bool) {
-	if needPrefix {
-		msg := "Контроль объекта с id = " + strconv.Itoa(control.objectId) + " : " + control.result
-		fmt.Println(msg)
-	} else {
-		fmt.Println(control.result)
-	}
+type Configuration struct {
+	Version string
+	Port    string
 }
 
 func main() {
-	testControl := Control{0, "Accepted"}
-	testControl.result = "Rejected"
-	testControl.result = "Cutout"
-	printControlResult(testControl, true)
+	testUser := User{0, "IlyaGo", "kek"}
+	testUser.nickname = "Lune"
+	run()
+}
+
+func run() {
+	configFile, _ := os.Open("config.json")
+	defer configFile.Close()
+
+	decoder := json.NewDecoder(configFile)
+	conf := Configuration{}
+	err := decoder.Decode(&conf)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	testWebPresenter := webPresenter{conf}
+	testWebPresenter.StartWebPresenter()
 }
