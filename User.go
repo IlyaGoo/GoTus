@@ -1,7 +1,7 @@
 package main
 
 type User struct {
-	userId   int
-	nickname string
-	password string
+	UserId   int
+	Nickname string
+	Password string
 }

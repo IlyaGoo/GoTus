@@ -1,4 +1,4 @@
-package main
+package web_presenter
 
 import (
 	"fmt"
@@ -18,20 +18,21 @@ func endPage(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, "Пока")
 }
 
-type webPresenter struct {
-	config Configuration
+type WebPresenter struct {
+	Port    string
+	Address string
 }
 
-func (p *webPresenter) StartWebPresenter() {
+func (p *WebPresenter) StartWebPresenter() {
 	pr := newPathResolver()
 	pr.Add("GET /homePage", homePage)
 	pr.Add("* /endPage/*", endPage)
 
-	adress := "localhost:" + p.config.Port
+	p.Address = "localhost:" + p.Port
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt, os.Kill)
 	go listenForShutDown(ch)
-	manners.ListenAndServe(adress, pr)
+	manners.ListenAndServe(p.Address, pr)
 }
 
 func (p *pathResolver) ServeHTTP(res http.ResponseWriter, req *http.Request) {
