@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -39,14 +41,14 @@ func init() {
 
 func initConfig() {
 	if cfgFile != "" {
-		// Use config file from the flag.
+		// Use config file from the flag
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
+		// Get current directory
 		path, err := os.Getwd()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".config" (without extension).
+		// Search config in home directory with name ".config" (without extension)
 		viper.AddConfigPath(path)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".config")
@@ -56,5 +58,19 @@ func initConfig() {
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	initLogger()
+}
+
+func initLogger() {
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetOutput(os.Stdout)
+	lvl, err := logrus.ParseLevel(viper.GetString("log_level"))
+	if err != nil {
+		logrus.SetLevel(logrus.DebugLevel)
+		logrus.Warn("Using debug level logger")
+	} else {
+		logrus.SetLevel(lvl)
 	}
 }
