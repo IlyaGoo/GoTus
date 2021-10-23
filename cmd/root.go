@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
@@ -30,8 +31,8 @@ func Execute() error {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&port, "port", "p", "", "port of web server")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&port, "port", "p", "", "port for web-server")
 	// Bind viper flags to cobra
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
 	viper.SetDefault("port", "8080")
@@ -58,9 +59,19 @@ func initConfig() {
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	} else if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		fmt.Println("Config file not found")
+	} else {
+		fmt.Println("Config file was found but another error was produced")
 	}
 
 	initLogger()
+
+	//Watching re-reading config files
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		logrus.Info("Config file changed:", e.Name)
+	})
+	viper.WatchConfig()
 }
 
 func initLogger() {
