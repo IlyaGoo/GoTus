@@ -5,7 +5,13 @@ import (
 )
 
 type WebPresenter struct {
-	Port string
+	port string
+}
+
+func NewWebPresenter(port string) WebPresenter {
+	return WebPresenter{
+		port: port,
+	}
 }
 
 func (p *WebPresenter) StartWebPresenter() {
@@ -15,5 +21,5 @@ func (p *WebPresenter) StartWebPresenter() {
 		return c.SendString("Hello on GoTus")
 	})
 
-	app.Listen(":" + p.Port)
+	app.Listen(":" + p.port)
 }

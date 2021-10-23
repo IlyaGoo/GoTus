@@ -11,14 +11,14 @@ func init() {
 	rootCmd.AddCommand(startWeb)
 }
 
-var testWebPresenter web_presenter.WebPresenter
+var webPresenter web_presenter.WebPresenter
 
 var startWeb = &cobra.Command{
 	Use:   "startWeb",
 	Short: "Start web server",
 	Long:  "Start web server",
 	Run: func(cmd *cobra.Command, args []string) {
-		testWebPresenter = web_presenter.WebPresenter{Port: viper.GetString("port")}
-		testWebPresenter.StartWebPresenter()
+		webPresenter = web_presenter.NewWebPresenter(viper.GetString("port"))
+		webPresenter.StartWebPresenter()
 	},
 }
