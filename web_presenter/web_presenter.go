@@ -5,8 +5,7 @@ import (
 )
 
 type WebPresenter struct {
-	Port    string
-	Address string
+	Port string
 }
 
 func (p *WebPresenter) StartWebPresenter() {
@@ -16,7 +15,5 @@ func (p *WebPresenter) StartWebPresenter() {
 		return c.SendString("Hello on GoTus")
 	})
 
-	p.Address = "localhost:" + p.Port
-
-	app.Listen(p.Address)
+	app.Listen(":" + p.Port)
 }

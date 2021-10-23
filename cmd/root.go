@@ -13,8 +13,8 @@ import (
 
 var (
 	// Used for flags.
-	cfgFile string
-	port    string
+	configPath string
+	port       string
 
 	rootCmd = &cobra.Command{
 		Use:   "GoTus",
@@ -31,9 +31,9 @@ func Execute() error {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "config file (default is $HOME/.cobra.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&port, "port", "p", "", "port for web-server")
-	// Bind viper flags to cobra
+	// Bind viper keys to cobra flags
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
 	viper.SetDefault("port", "8080")
 
@@ -41,9 +41,9 @@ func init() {
 }
 
 func initConfig() {
-	if cfgFile != "" {
+	if configPath != "" {
 		// Use config file from the flag
-		viper.SetConfigFile(cfgFile)
+		viper.SetConfigFile(configPath)
 	} else {
 		// Get current directory
 		path, err := os.Getwd()
