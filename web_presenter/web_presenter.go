@@ -1,25 +1,33 @@
 package web_presenter
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"fmt"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type WebPresenter struct {
-	port string
 }
 
-func NewWebPresenter(port string) WebPresenter {
-	return WebPresenter{
-		port: port,
-	}
+func NewWebPresenter() WebPresenter {
+	return WebPresenter{}
+}
+
+func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+}
+
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Welcome!\n")
 }
 
 func (p *WebPresenter) StartWebPresenter() {
-	app := fiber.New()
+	router := httprouter.New()
+	router.GET("/", Index)
+	router.GET("/hello/:name", Hello)
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello on GoTus")
-	})
-
-	app.Listen(":" + p.port)
+	logrus.Fatal(http.ListenAndServe(":"+viper.GetString("port"), router))
 }

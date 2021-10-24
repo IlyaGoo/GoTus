@@ -9,6 +9,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gofiber/fiber/v2 v2.20.2
 	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/julienschmidt/httprouter v1.3.0
 	github.com/ovh/tat v5.2.5+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
