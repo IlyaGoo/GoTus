@@ -1,4 +1,4 @@
-package web_presenter
+package web_server
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-type WebPresenter struct {
+type WebServer struct {
 }
 
-func NewWebPresenter() WebPresenter {
-	return WebPresenter{}
+func NewWebServer() WebServer {
+	return WebServer{}
 }
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -24,7 +24,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-func (p *WebPresenter) StartWebPresenter() {
+func (p *WebServer) StartWebServer() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)

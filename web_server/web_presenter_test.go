@@ -1,4 +1,4 @@
-package web_presenter
+package web_server
 
 import (
 	"testing"
