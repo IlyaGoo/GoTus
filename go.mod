@@ -12,6 +12,7 @@ require (
 	github.com/jinzhu/now v1.1.2 // indirect
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/ovh/tat v5.2.5+incompatible
+	github.com/rs/cors v1.8.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0

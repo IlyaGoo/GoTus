@@ -30,6 +30,7 @@ var UsersHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	// Here we are converting the slice of products to JSON
 	payload, _ := json.Marshal(administration.TestUsers)
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(payload))
 })
@@ -37,16 +38,17 @@ var UsersHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 var AddAbboutMeHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var user administration.User
 	vars := mux.Vars(r)
-	nickname := vars["nickname"]
+	slug := vars["slug"]
 
 	for _, u := range administration.TestUsers {
-		if u.Nickname == nickname {
+		if u.Slug == slug {
 			user = u
 		}
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	if user.Nickname != "" {
+	if user.Slug != "" {
 		payload, _ := json.Marshal(user)
 		w.Write([]byte(payload))
 	} else {
