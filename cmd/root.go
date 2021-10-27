@@ -31,7 +31,7 @@ func Execute() error {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "config file (default is ./config/.config)")
 	rootCmd.PersistentFlags().StringVarP(&port, "port", "p", "", "port for web-server")
 	// Bind viper keys to cobra flags
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
@@ -50,7 +50,7 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".config" (without extension)
-		viper.AddConfigPath(path)
+		viper.AddConfigPath(path + "/config")
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".config")
 	}

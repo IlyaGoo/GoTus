@@ -5,17 +5,37 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
+	"context"
+	"time"
 
 	"github.com/gorilla/mux"
 )
 
 type WebServer struct {
+	httpServer *http.Server
 }
 
 func NewWebServer() WebServer {
-	return WebServer{}
+	router := mux.NewRouter()
+
+	router.Handle("/", http.FileServer(http.Dir("./views/")))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+
+	router.Handle("/status", StatusHandler).Methods("GET")
+	router.Handle("/users", UsersHandler).Methods("GET")
+	router.Handle("/users/{slug}/abboutme", AddAbboutMeHandler).Methods("POST")
+
+	httpServer := &http.Server{
+		Addr:           ":" + viper.GetString("port"),
+		Handler:        router,
+		MaxHeaderBytes: 1 << 20,
+		ReadTimeout:    time.Duration(viper.GetInt("read_timeout")) * time.Second,
+		WriteTimeout:   time.Duration(viper.GetInt("write_timeout")) * time.Second,
+	}
+
+	return WebServer{httpServer}
 }
 
 var NotImplemented = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -56,15 +76,10 @@ var AddAbboutMeHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 })
 
-func (p *WebServer) StartWebServer() {
-	router := mux.NewRouter()
+func (s *WebServer) StartWebServer() error {
+	return s.httpServer.ListenAndServe()
+}
 
-	router.Handle("/", http.FileServer(http.Dir("./views/")))
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
-
-	router.Handle("/status", StatusHandler).Methods("GET")
-	router.Handle("/users", UsersHandler).Methods("GET")
-	router.Handle("/users/{slug}/abboutme", AddAbboutMeHandler).Methods("POST")
-
-	logrus.Fatal(http.ListenAndServe(":"+viper.GetString("port"), router))
+func (s *WebServer) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
