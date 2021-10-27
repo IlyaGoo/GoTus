@@ -13,15 +13,15 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(startWeb)
+	rootCmd.AddCommand(start)
 }
 
 var webServer web_server.WebServer
 
-var startWeb = &cobra.Command{
-	Use:   "startWeb",
-	Short: "Start web server",
-	Long:  "Start web server",
+var start = &cobra.Command{
+	Use:   "start",
+	Short: "Start app",
+	Long:  "Start http server etc",
 	Run: func(cmd *cobra.Command, args []string) {
 		webServer = web_server.NewWebServer()
 

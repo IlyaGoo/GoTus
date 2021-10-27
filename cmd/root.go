@@ -36,8 +36,6 @@ func init() {
 	// Bind viper keys to cobra flags
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
 	viper.SetDefault("port", "8080")
-
-	rootCmd.AddCommand(startWeb)
 }
 
 func initConfig() {
