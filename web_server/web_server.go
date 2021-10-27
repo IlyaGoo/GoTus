@@ -76,7 +76,7 @@ var AddAbboutMeHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 })
 
-func (s *WebServer) StartWebServer() error {
+func (s *WebServer) Run() error {
 	return s.httpServer.ListenAndServe()
 }
 
