@@ -1,8 +1,9 @@
-package cmd
+package main
 
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
@@ -24,7 +25,7 @@ var (
 )
 
 // Execute executes the root command.
-func Execute() error {
+func execute() error {
 	return rootCmd.Execute()
 }
 
@@ -48,7 +49,7 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".config" (without extension)
-		viper.AddConfigPath(path + "/config")
+		viper.AddConfigPath(filepath.Dir(path) + "/configs")
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".config")
 	}

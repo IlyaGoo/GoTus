@@ -1,7 +1,7 @@
-package web_server
+package server
 
 import (
-	"GoTus/administration"
+	"GoTus/internal/administration"
 	"encoding/json"
 	"net/http"
 
@@ -13,21 +13,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type WebServer struct {
+type Server struct {
 	httpServer *http.Server
 }
 
-func NewWebServer() WebServer {
+func NewServer() Server {
 	router := mux.NewRouter()
 
-	router.Handle("/", http.FileServer(http.Dir("./views/")))
+	router.Handle("/", http.FileServer(http.Dir("./assets/"))) //todo bad path
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	router.Handle("/status", StatusHandler).Methods("GET")
 	router.Handle("/users", UsersHandler).Methods("GET")
 	router.Handle("/users/{slug}/abboutme", AddAbboutMeHandler).Methods("POST")
 
-	httpServer := &http.Server{
+	s := &http.Server{
 		Addr:           ":" + viper.GetString("port"),
 		Handler:        router,
 		MaxHeaderBytes: 1 << 20,
@@ -35,7 +35,7 @@ func NewWebServer() WebServer {
 		WriteTimeout:   time.Duration(viper.GetInt("write_timeout")) * time.Second,
 	}
 
-	return WebServer{httpServer}
+	return Server{s}
 }
 
 var NotImplemented = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -76,10 +76,10 @@ var AddAbboutMeHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 })
 
-func (s *WebServer) Run() error {
+func (s *Server) Run() error {
 	return s.httpServer.ListenAndServe()
 }
 
-func (s *WebServer) Shutdown(ctx context.Context) error {
+func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }

@@ -1,7 +1,7 @@
-package cmd
+package main
 
 import (
-	"GoTus/web_server"
+	"GoTus/internal/server"
 	"context"
 	"os"
 	"os/signal"
@@ -16,14 +16,14 @@ func init() {
 	rootCmd.AddCommand(start)
 }
 
-var webServer web_server.WebServer
+var webServer server.Server
 
 var start = &cobra.Command{
 	Use:   "start",
 	Short: "Start app",
 	Long:  "Start http server etc",
 	Run: func(cmd *cobra.Command, args []string) {
-		webServer = web_server.NewWebServer()
+		webServer = server.NewServer()
 
 		go func() {
 			if err := webServer.Run(); err != nil {
