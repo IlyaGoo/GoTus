@@ -20,9 +20,7 @@ type Server struct {
 func NewServer() Server {
 	router := mux.NewRouter()
 
-	router.Handle("/", http.FileServer(http.Dir("./assets/"))) //todo bad path
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
-
+	router.Handle("/", http.FileServer(http.Dir("../assets/")))
 	router.Handle("/status", StatusHandler).Methods("GET")
 	router.Handle("/users", UsersHandler).Methods("GET")
 	router.Handle("/users/{slug}/abboutme", AddAbboutMeHandler).Methods("POST")
